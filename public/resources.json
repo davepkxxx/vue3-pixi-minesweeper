@@ -1,0 +1,11 @@
+{
+  "frames": {
+    "field.png": {
+      "frame": { "x": 0, "y": 49, "w": 15, "h": 15 }
+    }
+  },
+  "meta": {
+    "image": "resources.png",
+    "size": { "w": 167, "h": 82 }
+  }
+}

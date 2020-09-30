@@ -1,28 +1,34 @@
 import { createRenderer } from '@vue/runtime-core'
-import { Application } from 'pixi.js'
+import { Container, DisplayObject, Sprite, Texture } from 'pixi.js'
 
 const { render, createApp } = createRenderer({
   createElement (type) {
     switch (type) {
-      case 'application':
-        return new Application({
-          width: 250,
-          height: 250,
-        })
+      case 'sprite':
+        return Sprite.from('field.png')
     }
   },
-  patchProp () {
-    debugger
+  patchProp (el, key, prevValue, nextValue) {
+    if (el instanceof Sprite) {
+      switch (key) {
+        case 'x':
+        case 'y':
+        case 'width':
+        case 'height':
+          el[key] = nextValue
+          break
+      }
+    }
   },
-  parentNode () {
-    debugger
+  parentNode (node) {
+    if (node instanceof DisplayObject) node.parent
   },
   createComment () {},
   insert (el, parent) {
-    if (el instanceof Application && parent instanceof Node) parent.appendChild(el.view)
+    if (parent instanceof Container) parent.addChild(el)
   },
   remove (el) {
-    debugger
+    if (el instanceof DisplayObject) el.parent.removeChild(el)
   },
 })
 
