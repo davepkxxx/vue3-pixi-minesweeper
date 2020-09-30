@@ -1,7 +1,10 @@
 import { defineComponent, h } from "@vue/runtime-core";
 
 export default defineComponent({
-  setup () {
-    return () => h('sprite', { x: 0, y: 0, width: 15, height: 15 })
+  props: ['x', 'y'],
+  setup (props) {
+    let { x, y } = props
+    x *= 15, y *= 15
+    return () => h('sprite', { x, y, width: 15, height: 15 })
   }
 })

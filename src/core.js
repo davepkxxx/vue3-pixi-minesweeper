@@ -8,6 +8,12 @@ const { render, createApp } = createRenderer({
         return Sprite.from('field.png')
     }
   },
+  createComment (text) {
+    return document.createComment(text)
+  },
+  createText (text) {
+    return document.createTextNode(text)
+  },
   patchProp (el, key, prevValue, nextValue) {
     if (el instanceof Sprite) {
       switch (key) {
@@ -19,13 +25,14 @@ const { render, createApp } = createRenderer({
           break
       }
     }
+
+    return el
   },
   parentNode (node) {
     if (node instanceof DisplayObject) node.parent
   },
-  createComment () {},
   insert (el, parent) {
-    if (parent instanceof Container) parent.addChild(el)
+    if (parent instanceof Container && el instanceof DisplayObject) parent.addChild(el)
   },
   remove (el) {
     if (el instanceof DisplayObject) el.parent.removeChild(el)
