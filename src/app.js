@@ -1,4 +1,4 @@
-import { defineComponent, h } from '@vue/runtime-core'
+import { defineComponent, h, reactive } from '@vue/runtime-core'
 import Field from './components/field'
 
 function random (num) {
@@ -7,8 +7,8 @@ function random (num) {
 
 function randomMines () {
   const mines = []
-  while (mines.length < 0) {
-    const [x, y] = [random() * 10, random() * 10]
+  while (mines.length < 10) {
+    const [x, y] = [random(10), random(10)]
     if (mines.every(mine => mine.x !== x && mine.y !== y)) mines.push({ x, y })
   }
   return mines
@@ -21,7 +21,7 @@ function newMap () {
     map[y] = []
     for (let x = 0; x < 10; x++) {
       const mine = mines.some(e => e.x === x && e.y === y)
-      map[y][x] = { x, y, mine }
+      map[y][x] = reactive({ x, y, mine, explored: false })
     }
   }
   return map
@@ -31,8 +31,14 @@ export default defineComponent({
   setup () {
     const map = newMap()
     return () => map.reduce((nodes, row) => (
-      nodes.concat(row.map((col) => (
-        h(Field, { x: col.x, y: col.y })))
+      nodes.concat(row.map(col => (
+        h(Field, {
+          x: col.x,
+          y: col.y,
+          mine: col.mine,
+          explored: col.explored,
+          onExplore: () => { col.explored = true }
+        })))
       )
     ), [])
   }

@@ -5,7 +5,7 @@ const { render, createApp } = createRenderer({
   createElement (type) {
     switch (type) {
       case 'sprite':
-        return Sprite.from('field.png')
+        return new Sprite()
     }
   },
   createComment (text) {
@@ -21,7 +21,14 @@ const { render, createApp } = createRenderer({
         case 'y':
         case 'width':
         case 'height':
+        case 'interactive':
           el[key] = nextValue
+          break
+        case 'texture':
+          el.texture = Texture.from(nextValue)
+          break
+        case 'onClick':
+          el.on('click', nextValue)
           break
       }
     }
@@ -30,6 +37,9 @@ const { render, createApp } = createRenderer({
   },
   parentNode (node) {
     if (node instanceof DisplayObject) node.parent
+  },
+  nextSibling (node) {
+    return node.nextSibling
   },
   insert (el, parent) {
     if (parent instanceof Container && el instanceof DisplayObject) parent.addChild(el)
