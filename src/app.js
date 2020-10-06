@@ -33,7 +33,25 @@ function newMap () {
 export default defineComponent({
   setup () {
     const map = newMap()
-    return () => map.reduce((nodes, row) => (
+
+    const explore = (x, y) => {
+      const cell = map[y][x]
+      if (!cell.explored) {
+        cell.explored = true
+        if (cell.num === 0)
+          for (let row = y - 1; row <= y + 1; row++)
+            for (let col = x - 1; col <= x + 1; col++)
+              map[row] && map[row][col] && explore(col, row)
+      }
+    }
+
+    return {
+      map,
+      explore
+    }
+  },
+  render () {
+    return this.map.reduce((nodes, row) => (
       nodes.concat(row.map(col => (
         h(Field, {
           x: col.x,
@@ -41,7 +59,7 @@ export default defineComponent({
           mine: col.mine,
           num: col.num,
           explored: col.explored,
-          onExplore: () => { col.explored = true }
+          onExplore: () => this.explore(col.x, col.y)
         })))
       )
     ), [])
