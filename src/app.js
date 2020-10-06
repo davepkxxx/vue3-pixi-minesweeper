@@ -9,7 +9,7 @@ function randomMines () {
   const mines = []
   while (mines.length < 10) {
     const [x, y] = [random(10), random(10)]
-    if (mines.every(mine => mine.x !== x && mine.y !== y)) mines.push({ x, y })
+    if (mines.every(mine => mine.x !== x || mine.y !== y)) mines.push({ x, y })
   }
   return mines
 }
@@ -21,7 +21,10 @@ function newMap () {
     map[y] = []
     for (let x = 0; x < 10; x++) {
       const mine = mines.some(e => e.x === x && e.y === y)
-      map[y][x] = reactive({ x, y, mine, explored: false })
+      const num = mines
+        .map(e => (Math.abs(e.x - x) <= 1 && Math.abs(e.y - y) <= 1) ? 1 : 0)
+        .reduce((count, n) => (count + n), 0)
+      map[y][x] = reactive({ x, y, mine, num, explored: false })
     }
   }
   return map
@@ -36,6 +39,7 @@ export default defineComponent({
           x: col.x,
           y: col.y,
           mine: col.mine,
+          num: col.num,
           explored: col.explored,
           onExplore: () => { col.explored = true }
         })))

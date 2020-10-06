@@ -1,17 +1,34 @@
-import { computed, defineComponent, h } from "@vue/runtime-core";
+import { computed, defineComponent, h } from '@vue/runtime-core';
+
+function getTexture ({ explored, mine, num }) {
+  if (explored) {
+    if (mine) return 'bomb.png'
+
+    switch (num) {
+      case 1: return 'one.png'
+      case 2: return 'two.png'
+      case 3: return 'three.png'
+      case 4: return 'four.png'
+      case 5: return 'five.png'
+      case 6: return 'six.png'
+      case 7: return 'seven.png'
+      case 8: return 'eight.png'
+      default: return 'blank.png'
+    }
+  }
+
+  return 'field.png'
+}
 
 export default defineComponent({
-  props: ['x', 'y', 'mine', 'explored'],
+  props: ['x', 'y', 'mine', 'num', 'explored'],
   setup (props, ctx) {
-    const texture = computed(() => (
-      props.explored ? 'blank.png' : 'field.png'
-    ))
     return {
-      texture,
+      texture: computed(() => getTexture(props)),
       onClick: () => ctx.emit('explore')
     }
   },
-  render (props) {
+  render () {
     return h('sprite', {
       x: this.x * 15, 
       y: this.y * 15, 
