@@ -1,6 +1,6 @@
 import { computed, defineComponent, h } from '@vue/runtime-core';
 
-function getTexture ({ explored, mine, num }) {
+function getTexture ({ explored, mine, num, flag }) {
   if (explored) {
     if (mine) return 'bomb.png'
 
@@ -17,15 +17,20 @@ function getTexture ({ explored, mine, num }) {
     }
   }
 
-  return 'field.png'
+  switch (flag) {
+    case 'flag': return 'flag.png'
+    case 'quest': return 'quest.png'
+    default: return 'field.png'
+  }
 }
 
 export default defineComponent({
-  props: ['x', 'y', 'mine', 'num', 'explored'],
+  props: ['x', 'y', 'mine', 'num', 'explored', 'flag'],
   setup (props, ctx) {
     return {
       texture: computed(() => getTexture(props)),
-      onClick: () => ctx.emit('explore')
+      onClick: () => ctx.emit('explore'),
+      onRightClick: () => ctx.emit('flag')
     }
   },
   render () {
@@ -36,7 +41,8 @@ export default defineComponent({
       height: 15, 
       interactive: true,
       texture: this.texture,
-      onClick: this.onClick
+      onClick: this.onClick,
+      onRightClick: this.onRightClick,
     })
   }
 })

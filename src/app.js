@@ -24,7 +24,7 @@ function newMap () {
       const num = mines
         .map(e => (Math.abs(e.x - x) <= 1 && Math.abs(e.y - y) <= 1) ? 1 : 0)
         .reduce((count, n) => (count + n), 0)
-      map[y][x] = reactive({ x, y, mine, num, explored: false })
+      map[y][x] = reactive({ x, y, mine, num, explored: false, flag: 'none' })
     }
   }
   return map
@@ -36,7 +36,7 @@ export default defineComponent({
 
     const explore = (x, y) => {
       const cell = map[y][x]
-      if (!cell.explored) {
+      if (!cell.explored && cell.flag === 'none') {
         cell.explored = true
         if (cell.num === 0)
           for (let row = y - 1; row <= y + 1; row++)
@@ -45,21 +45,41 @@ export default defineComponent({
       }
     }
 
+    const flag = (x, y) => {
+      const cell = map[y][x]
+      if (!cell.explored) {
+        switch (cell.flag) {
+          case 'none':
+            cell.flag = 'flag'
+            break
+          case 'flag':
+            cell.flag = 'quest'
+            break
+          case 'quest':
+            cell.flag = 'none'
+            break
+        }
+      }
+    }
+
     return {
       map,
-      explore
+      explore,
+      flag,
     }
   },
   render () {
     return this.map.reduce((nodes, row) => (
-      nodes.concat(row.map(col => (
+      nodes.concat(row.map(cell => (
         h(Field, {
-          x: col.x,
-          y: col.y,
-          mine: col.mine,
-          num: col.num,
-          explored: col.explored,
-          onExplore: () => this.explore(col.x, col.y)
+          x: cell.x,
+          y: cell.y,
+          mine: cell.mine,
+          num: cell.num,
+          explored: cell.explored,
+          flag: cell.flag,
+          onExplore: () => this.explore(cell.x, cell.y),
+          onFlag: () => this.flag(cell.x, cell.y),
         })))
       )
     ), [])

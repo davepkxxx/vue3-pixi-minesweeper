@@ -30,6 +30,9 @@ const { render, createApp } = createRenderer({
         case 'onClick':
           el.on('click', nextValue)
           break
+        case 'onRightClick':
+          el.on('rightclick', nextValue)
+          break
       }
     }
 
