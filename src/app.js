@@ -1,4 +1,4 @@
-import { defineComponent, h, reactive } from '@vue/runtime-core'
+import { defineComponent, h, reactive, ref } from '@vue/runtime-core'
 import Field from './components/field'
 
 function random (num) {
@@ -32,37 +32,44 @@ function newMap () {
 
 export default defineComponent({
   setup () {
+    const end = ref(false)
     const map = newMap()
 
     const explore = (x, y) => {
-      const cell = map[y][x]
-      if (!cell.explored && cell.flag === 'none') {
-        cell.explored = true
-        if (cell.num === 0)
-          for (let row = y - 1; row <= y + 1; row++)
-            for (let col = x - 1; col <= x + 1; col++)
-              map[row] && map[row][col] && explore(col, row)
+      if (!end.value) {
+        const cell = map[y][x]
+        if (!cell.explored && cell.flag === 'none') {
+          cell.explored = true
+          if (cell.mine) end.value = true
+          else if (cell.num === 0)
+            for (let row = y - 1; row <= y + 1; row++)
+              for (let col = x - 1; col <= x + 1; col++)
+                map[row] && map[row][col] && explore(col, row)
+        }
       }
     }
 
     const flag = (x, y) => {
-      const cell = map[y][x]
-      if (!cell.explored) {
-        switch (cell.flag) {
-          case 'none':
-            cell.flag = 'flag'
-            break
-          case 'flag':
-            cell.flag = 'quest'
-            break
-          case 'quest':
-            cell.flag = 'none'
-            break
+      if (!end.value) {
+        const cell = map[y][x]
+        if (!cell.explored) {
+          switch (cell.flag) {
+            case 'none':
+              cell.flag = 'flag'
+              break
+            case 'flag':
+              cell.flag = 'quest'
+              break
+            case 'quest':
+              cell.flag = 'none'
+              break
+          }
         }
       }
     }
 
     return {
+      end,
       map,
       explore,
       flag,
@@ -72,6 +79,7 @@ export default defineComponent({
     return this.map.reduce((nodes, row) => (
       nodes.concat(row.map(cell => (
         h(Field, {
+          end: this.end,
           x: cell.x,
           y: cell.y,
           mine: cell.mine,

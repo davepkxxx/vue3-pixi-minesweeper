@@ -1,6 +1,6 @@
 import { computed, defineComponent, h } from '@vue/runtime-core';
 
-function getTexture ({ explored, mine, num, flag }) {
+function getTexture ({ end, explored, mine, num, flag }) {
   if (explored) {
     if (mine) return 'bomb.png'
 
@@ -18,14 +18,14 @@ function getTexture ({ explored, mine, num, flag }) {
   }
 
   switch (flag) {
-    case 'flag': return 'flag.png'
+    case 'flag': return end && !mine ? 'miss.png' : 'flag.png'
     case 'quest': return 'quest.png'
-    default: return 'field.png'
+    case 'none': return end && mine ? 'mine.png' : 'field.png'
   }
 }
 
 export default defineComponent({
-  props: ['x', 'y', 'mine', 'num', 'explored', 'flag'],
+  props: ['end', 'x', 'y', 'mine', 'num', 'explored', 'flag'],
   setup (props, ctx) {
     return {
       texture: computed(() => getTexture(props)),
