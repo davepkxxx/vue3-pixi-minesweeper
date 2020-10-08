@@ -1,5 +1,5 @@
 import { createApp } from './core'
-import App from './app.js'
+import App from './map.js'
 import { Application } from 'pixi.js'
 
 window.oncontextmenu = e => e.preventDefault()
