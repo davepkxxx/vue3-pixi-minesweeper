@@ -9,10 +9,11 @@ function getTexture (status) {
 
 export default defineComponent({
   props: ['status', 'x', 'y'],
+  emits: ['click'],
   setup (props, { emit }) {
     return {
       texture: computed(() => getTexture(props.status)),
-      reset: () => emit('reset')
+      click: () => emit('click')
     }
   },
   render () {
@@ -23,7 +24,7 @@ export default defineComponent({
       height: 23,
       interactive: true,
       texture: this.texture,
-      onClick: this.reset,
+      onClick: this.click,
     })
   }
 })

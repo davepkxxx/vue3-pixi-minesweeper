@@ -32,7 +32,7 @@ function newMap () {
 
 export default defineComponent({
   props: ['status'],
-  emits: ['lose', 'flagsChange'],
+  emits: ['statusChange', 'flagsChange'],
   setup (props, { emit }) {
     const map = ref(null)
     const flags = ref(0)
@@ -52,8 +52,10 @@ export default defineComponent({
         const cell = map.value[y][x]
         if (!cell.explored && !cell.flag) {
           cell.explored = true
-          if (cell.mine) emit('lose')
-          else if (cell.num === 0)
+          if (cell.mine) emit('statusChange', 'lose')
+          else emit('statusChange', 'start')
+
+          if (cell.num === 0)
             for (let row = y - 1; row <= y + 1; row++)
               for (let col = x - 1; col <= x + 1; col++)
                 map.value[row] && map.value[row][col] && explore(col, row)
