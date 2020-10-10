@@ -6,7 +6,7 @@ window.oncontextmenu = e => e.preventDefault()
 
 const app = new Application({
   width: 150,
-  height: 150,
+  height: 173,
 })
 
 document.body.appendChild(app.view)

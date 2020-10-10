@@ -1,4 +1,4 @@
-import { defineComponent, h, reactive, ref } from '@vue/runtime-core'
+import { computed, defineComponent, h, reactive, ref } from '@vue/runtime-core'
 import Field from './components/field'
 
 function random (num) {
@@ -31,27 +31,29 @@ function newMap () {
 }
 
 export default defineComponent({
-  setup () {
-    const end = ref(false)
-    const map = newMap()
+  props: ['status'],
+  emits: ['lose'],
+  setup (props, { emit }) {
+    const map = ref(newMap())
+    const end = computed(() => props.status === 'win' || props.status === 'lose')
 
     const explore = (x, y) => {
       if (!end.value) {
-        const cell = map[y][x]
+        const cell = map.value[y][x]
         if (!cell.explored && cell.flag === 'none') {
           cell.explored = true
-          if (cell.mine) end.value = true
+          if (cell.mine) emit('lose')
           else if (cell.num === 0)
             for (let row = y - 1; row <= y + 1; row++)
               for (let col = x - 1; col <= x + 1; col++)
-                map[row] && map[row][col] && explore(col, row)
+                map.value[row] && map.value[row][col] && explore(col, row)
         }
       }
     }
 
     const flag = (x, y) => {
       if (!end.value) {
-        const cell = map[y][x]
+        const cell = map.value[y][x]
         if (!cell.explored) {
           switch (cell.flag) {
             case 'none':
@@ -71,6 +73,7 @@ export default defineComponent({
     return {
       end,
       map,
+      init: () => map.value = newMap(),
       explore,
       flag,
     }

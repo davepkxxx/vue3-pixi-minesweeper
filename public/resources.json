@@ -1,5 +1,11 @@
 {
   "frames": {
+    "start.png": {
+      "frame": { "x": 0, "y": 24, "w": 23, "h": 23 }
+    },
+    "lose.png": {
+      "frame": { "x": 100, "y": 24, "w": 23, "h": 23 }
+    },
     "field.png": {
       "frame": { "x": 0, "y": 49, "w": 15, "h": 15 }
     },

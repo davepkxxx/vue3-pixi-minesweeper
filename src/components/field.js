@@ -1,4 +1,4 @@
-import { computed, defineComponent, h } from '@vue/runtime-core';
+import { computed, defineComponent, h } from '@vue/runtime-core'
 
 function getTexture ({ end, explored, mine, num, flag }) {
   if (explored) {
@@ -29,20 +29,20 @@ export default defineComponent({
   setup (props, ctx) {
     return {
       texture: computed(() => getTexture(props)),
-      onClick: () => ctx.emit('explore'),
-      onRightClick: () => ctx.emit('flag')
+      explore: () => ctx.emit('explore'),
+      flag: () => ctx.emit('flag')
     }
   },
   render () {
     return h('sprite', {
       x: this.x * 15, 
-      y: this.y * 15, 
+      y: this.y * 15 + 23, 
       width: 15,
       height: 15, 
       interactive: true,
       texture: this.texture,
-      onClick: this.onClick,
-      onRightClick: this.onRightClick,
+      onClick: this.explore,
+      onRightClick: this.flag,
     })
   }
 })
