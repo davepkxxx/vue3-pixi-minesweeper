@@ -8,7 +8,7 @@ function getTexture (status) {
 }
 
 export default defineComponent({
-  props: ['status'],
+  props: ['status', 'x', 'y'],
   setup (props, { emit }) {
     return {
       texture: computed(() => getTexture(props.status)),
@@ -17,8 +17,8 @@ export default defineComponent({
   },
   render () {
     return h('sprite', {
-      x: 0,
-      y: 0,
+      x: this.x,
+      y: this.y,
       width: 23,
       height: 23,
       interactive: true,

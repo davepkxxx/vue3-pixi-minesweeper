@@ -5,14 +5,14 @@ function getTexture ({ end, explored, mine, num, flag }) {
     if (mine) return 'bomb.png'
 
     switch (num) {
-      case 1: return 'one.png'
-      case 2: return 'two.png'
-      case 3: return 'three.png'
-      case 4: return 'four.png'
-      case 5: return 'five.png'
-      case 6: return 'six.png'
-      case 7: return 'seven.png'
-      case 8: return 'eight.png'
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8: return 'm' + num + '.png'
       default: return 'blank.png'
     }
   }
