@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, reactive, ref } from '@vue/runtime-core'
+import { computed, defineComponent, h, reactive, ref, watch } from '@vue/runtime-core'
 import Field from './components/field'
 
 function random (num) {
@@ -24,7 +24,7 @@ function newMap () {
       const num = mines
         .map(e => (Math.abs(e.x - x) <= 1 && Math.abs(e.y - y) <= 1) ? 1 : 0)
         .reduce((count, n) => (count + n), 0)
-      map[y][x] = reactive({ x, y, mine, num, explored: false, flag: 'none' })
+      map[y][x] = reactive({ x, y, mine, num, explored: false, flag: false })
     }
   }
   return map
@@ -32,15 +32,25 @@ function newMap () {
 
 export default defineComponent({
   props: ['status'],
-  emits: ['lose'],
+  emits: ['lose', 'flagsChange'],
   setup (props, { emit }) {
-    const map = ref(newMap())
+    const map = ref(null)
+    const flags = ref(0)
     const end = computed(() => props.status === 'win' || props.status === 'lose')
+
+    watch(flags, value => emit('flagsChange', value))
+
+    const init = () => {
+      map.value = newMap()
+      flags.value = 10
+    }
+
+    init()
 
     const explore = (x, y) => {
       if (!end.value) {
         const cell = map.value[y][x]
-        if (!cell.explored && cell.flag === 'none') {
+        if (!cell.explored && !cell.flag) {
           cell.explored = true
           if (cell.mine) emit('lose')
           else if (cell.num === 0)
@@ -54,18 +64,9 @@ export default defineComponent({
     const flag = (x, y) => {
       if (!end.value) {
         const cell = map.value[y][x]
-        if (!cell.explored) {
-          switch (cell.flag) {
-            case 'none':
-              cell.flag = 'flag'
-              break
-            case 'flag':
-              cell.flag = 'quest'
-              break
-            case 'quest':
-              cell.flag = 'none'
-              break
-          }
+        if (!cell.explored && (cell.flag || flags.value > 0)) {
+          flags.value += (cell.flag ? 1 : -1)
+          cell.flag = !cell.flag
         }
       }
     }
@@ -73,7 +74,7 @@ export default defineComponent({
     return {
       end,
       map,
-      init: () => map.value = newMap(),
+      init,
       explore,
       flag,
     }

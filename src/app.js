@@ -6,6 +6,7 @@ import Nums from './components/nums'
 export default defineComponent({
   setup () {
     const status = ref('init')
+    const flags = ref(0)
     const map = ref(null)
 
     const reset = () => {
@@ -13,12 +14,10 @@ export default defineComponent({
       map.value.init()
     }
 
-    const end = value => status.value = value
-
     return {
       status,
+      flags,
       map,
-      end,
       reset,
     }
   },
@@ -33,7 +32,7 @@ export default defineComponent({
       h(Nums, { 
         x: 0,
         y: 0,
-        value: 0,
+        value: this.flags,
       }),
       h(Nums, { 
         x: 114,
@@ -43,7 +42,8 @@ export default defineComponent({
       h(Map, { 
         ref: 'map',
         status: this.status,
-        onLose: () => this.end('lose'),
+        onFlagsChange: value => { this.flags = value },
+        onLose: () => this.status = 'lose',
       }),
     ]
   }

@@ -17,20 +17,17 @@ function getTexture ({ end, explored, mine, num, flag }) {
     }
   }
 
-  switch (flag) {
-    case 'flag': return end && !mine ? 'miss.png' : 'flag.png'
-    case 'quest': return 'quest.png'
-    case 'none': return end && mine ? 'mine.png' : 'field.png'
-  }
+  if (flag) return end && !mine ? 'miss.png' : 'flag.png'
+  else return end && mine ? 'mine.png' : 'field.png'
 }
 
 export default defineComponent({
   props: ['end', 'x', 'y', 'mine', 'num', 'explored', 'flag'],
-  setup (props, ctx) {
+  setup (props, { emit }) {
     return {
       texture: computed(() => getTexture(props)),
-      explore: () => ctx.emit('explore'),
-      flag: () => ctx.emit('flag')
+      explore: () => emit('explore'),
+      flag: () => emit('flag'),
     }
   },
   render () {
