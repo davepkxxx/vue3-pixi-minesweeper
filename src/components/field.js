@@ -3,18 +3,7 @@ import { computed, defineComponent, h } from '@vue/runtime-core'
 function getTexture ({ end, explored, mine, num, flag }) {
   if (explored) {
     if (mine) return 'bomb.png'
-
-    switch (num) {
-      case 1:
-      case 2:
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-      case 7:
-      case 8: return 'm' + num + '.png'
-      default: return 'blank.png'
-    }
+    return num > 0 ? 'm' + num + '.png' : 'blank.png'
   }
 
   if (flag) return end && !mine ? 'miss.png' : 'flag.png'

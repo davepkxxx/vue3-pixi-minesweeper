@@ -2,6 +2,7 @@ import { computed, defineComponent, h } from '@vue/runtime-core'
 
 function getTexture (status) {
   switch (status) {
+    case 'win': return 'win.png'
     case 'lose': return 'lose.png'
     default: return 'start.png'
   }

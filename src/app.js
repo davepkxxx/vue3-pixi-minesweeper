@@ -20,6 +20,7 @@ export default defineComponent({
         case 'start':
           timer.interval = setInterval(() => timer.time++, 1000)
           break
+        case 'win':
         case 'lose':
           clearInterval(timer.interval)
       }

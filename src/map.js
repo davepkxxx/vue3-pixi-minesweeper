@@ -34,17 +34,25 @@ export default defineComponent({
   props: ['status'],
   emits: ['statusChange', 'flagsChange'],
   setup (props, { emit }) {
-    const map = ref(null)
-    const flags = ref(0)
     const end = computed(() => props.status === 'win' || props.status === 'lose')
 
+    const flags = ref(0)
     watch(flags, value => emit('flagsChange', value))
+
+    const map = ref(null)
+    const allExplored = computed(() => (
+      map.value && map.value.reduce((count, row) => (
+        count + row.reduce((num, cell) => (
+          num + (cell.explored ? 1 : 0)
+        ), 0)
+      ), 0) >= 90
+    ))
+    watch(allExplored, value => value && emit('statusChange', 'win'))
 
     const init = () => {
       map.value = newMap()
       flags.value = 10
     }
-
     init()
 
     const explore = (x, y) => {
